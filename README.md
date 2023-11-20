@@ -638,6 +638,20 @@ void AFlagActor::LooseFormation(int TotalNum)
 	}
 }
 ```
+&nbsp;
+
+* 발사 및 돌격 명령
+
+f4키를 누르면 돌격 f5키를 누르면 사격 사정거리 범위로 들어올 시 총을 발사합니다.
+
+돌격시 Pawn AI의 BehaviorTree의 Service를 통해 적을 식별하고 식별된 값이 블랙보드에 들어가게 됩니다.
+![44](https://github.com/Makingcode/ProjectH/assets/13048481/ec369a57-4a05-477f-806d-c99bd987820e)
+
+블랙보드 키 EnemyActor에 설정된 액터를 따라가게 되며 발사 사정거리 안에 들어오면 총을 발사합니다.
+
+EnemyActor가 죽거나 사라지면 새로운 EnemyActor를 탐색하며 Find Nearst Actor 함수를 통해 가장 가까운 Enemy에 해당하는 액터가 
+EnemyActor에 등록되게 됩니다.
+
 
 
 
