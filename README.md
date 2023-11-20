@@ -7,3 +7,5 @@
 
 ## 플레이 영상
 ![Uploading 11.png…]()
+&nbsp;
+https://www.youtube.com/watch?v=xG--lTDVgZQ&t=33s
