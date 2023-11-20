@@ -25,6 +25,8 @@ https://www.youtube.com/watch?v=xG--lTDVgZQ&t=33s
 ### 캐릭터 이동
 주 메인 레벨에서의 캐릭터 이동
 
+언리얼엔진5에서 새롭게 나온 EnhancedInput 시스템을 활용
+
 ```c
 void AMainLevelController::SetupInputComponent()
 {
@@ -42,3 +44,8 @@ void AMainLevelController::SetupInputComponent()
 	}
 }
 ```
+
+레벨의 어느 지점을 클릭했을시 트리거 이벤트 시작은 StopMovement, 트리거중일땐 클릭한 위치의 계산 및 위치표시 데칼표시
+트리거 완료시 이동을 통해 클릭 이동을 구현하였으며 이벤트 시작의 StopMovement를 통해 이동중에 다른 위치를 클릭하면 
+원래 이동하던 것을 멈추고 새로운 지점으로 다시 움직입니다.
+
