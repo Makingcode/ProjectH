@@ -53,4 +53,37 @@ void AMainLevelController::SetupInputComponent()
 
 &nbsp;
 
-d
+데칼관련
+Class Map을 만들어 클래스를 설정해주고 
+
+```c
+UPROPERTY(EditAnywhere, Category="Class")
+	TMap<UClass*, FName> ClassMap;
+```
+
+![22](https://github.com/Makingcode/ProjectH/assets/13048481/cd9f78e7-8b6c-4741-8e57-5ba552a5cca2)
+
+GetHitResultUnderCursorByChannel을 통해 얻은 HitActor의 클래스를 Class Map과 비교하여 
+알맞는 데칼을 보여준다
+
+```c
+void AMainLevelController::MoveFunction()
+{
+	FString CurrentClassName = ClassMap.Find(HitActorClass)->ToString();
+	
+	if (CurrentClassName== FString("Enemy")||CurrentClassName==FString("Town"))
+	{
+		FName CurrentHitActorName = UKismetStringLibrary::Conv_StringToName(CurrentClassName);
+		UAIBlueprintHelperLibrary::SimpleMoveToActor(this, MouseHitActor);
+		CallWidget(MouseHitActor, CurrentHitActorName);
+	}
+	else
+	{
+		UAIBlueprintHelperLibrary::SimpleMoveToLocation(this, MovetoLocation);
+	}
+}
+```
+
+
+
+
