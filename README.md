@@ -18,6 +18,8 @@ https://www.youtube.com/watch?v=xG--lTDVgZQ&t=33s
 * 개발인원 1인
 * c++ 블루프린트를 둘다 활용하여 제작
 
+* 기타 사용도구 : Blender, Character creator3, Worldcreation
+
   &nbsp;
 ## 기술설명서
 
@@ -653,6 +655,82 @@ f4키를 누르면 돌격 f5키를 누르면 사격 사정거리 범위로 들�
 EnemyActor가 죽거나 사라지면 새로운 EnemyActor를 탐색하며 Find Nearst Actor 함수를 통해 가장 가까운 Enemy에 해당하는 액터가 
 EnemyActor에 등록되게 됩니다.
 
+
+* 연발사격 관련
+Settimer를 이용하여 연발사격을 구현했습니다
+
+연발사격코드
+
+```c
+void ASoldierPawn::ShootingGun()
+{
+
+	if (bIsDeath == false&&bCouldFire&&!bIsReload)
+	{
+		const USkeletalMeshSocket* MuzzleSocket = BodyMesh->GetSocketByName("MuzzleSocket");
+		FTransform MuzzleSocketTransform = MuzzleSocket->GetSocketTransform(BodyMesh);
+		FVector MuzzleSocketLocation = MuzzleSocketTransform.GetLocation();
+		FActorSpawnParameters SpawnParams;
+
+		if (CurrentBullet > 0)
+		{
+			if (MuzzleFire != nullptr&&FireSound!=nullptr)
+			{
+				UGameplayStatics::SpawnEmitterAttached(MuzzleFire, BodyMesh, "", MuzzleSocketLocation,FRotator(0,0,0),EAttachLocation::KeepWorldPosition);
+				UGameplayStatics::SpawnSoundAttached(FireSound, BodyMesh);
+
+			}
+			CurrentBullet -= 1;
+			Bullet = GetWorld()->SpawnActor<ABullet>(BulletClass,MuzzleSocketLocation,AimRotation, SpawnParams);
+			Bullet->OwnerController = GetController();
+			if (Tags[0].IsValid())
+			{
+				Bullet->Tags.Add(Tags[0]);
+			}
+
+			bCouldFire = false;
+			GetWorldTimerManager().SetTimer(FireHandle, this, &ASoldierPawn::FireEnd, FireRate);
+			
+		}
+		else
+		{
+			CurrentBullet = 0;
+			Reload();
+		}
+	}
+}
+
+void ASoldierPawn::FireEnd()
+{
+	bCouldFire = true;
+	if(CurrentBullet>0)
+	{
+		ShootingGun();
+	}
+	else
+	{
+		bIsFire = false;
+	}
+}
+```
+
 &nbsp;
 
+* 전투레벨에서의 적 AI
 
+전투레벨 진입시 UnitSize를 비교한 후 행동패턴이 바뀝니다
+
+<내 캐릭터의 유닛이 상대 유닛보다 더 많은 경우>
+일정거리까지는 다가오지만 더 가까이 갈경우 캐릭터의 반대방향으로 도망칩니다
+도망치다가 사격 사정거리안에 들어가면 캐릭터에게 총을 발사합니다.
+
+<내 캐릭터의 유닛이 상대 유닛보다 적거나 같을 경우>
+돌격명령을 받고 바로 돌격합니다.
+
+&nbsp;
+
+* 이동 레벨에서의 적 AI
+평소에는 랜덤으로 이동하다가 내 캐릭터가 보일 시 내 캐릭터의 UnitSize와 자신의 UnitSize를 비교 후
+따라오거나 관심이 없게 됩니다.
+
+&nbsp;
