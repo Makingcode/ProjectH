@@ -23,7 +23,7 @@ https://www.youtube.com/watch?v=xG--lTDVgZQ&t=33s
 
 
 ### 캐릭터 이동
-주 메인 레벨에서의 캐릭터 이동
+*주 메인 레벨에서의 캐릭터 이동
 
 언리얼엔진5에서 새롭게 나온 EnhancedInput 시스템을 활용하였으며
 
@@ -53,7 +53,7 @@ void AMainLevelController::SetupInputComponent()
 
 &nbsp;
 
-데칼관련
+*데칼관련
 Class Map을 만들어 클래스를 설정해주고 
 
 ```c
@@ -87,12 +87,12 @@ void AMainLevelController::MoveFunction()
 ### 게임시간과 밤낮
 에픽게임즈에서 제공하는 플러그인 Sun Position Calculator를 사용하였습니다
 
-게임시간의 흐름 조절
+*게임시간의 흐름 조절
 
 일시정지(1번버튼) 일반(2번버튼) 빠르게(3번 버튼)의 3종류로 시간의 흐름을 조절할 수 있습니다
 시간흐름의 조절은 Set Global Time Dilation 기능을 사용하였습니다
 
-레벨전환시 시간의 공유
+*레벨전환시 시간의 공유
 캐릭터 이동레벨에서 전투레벨로 전환시 시간은 게임인스턴스를 이용해 공유하였습니다
 
 게임인스턴스에 시간에 관련된 구조체를 생성하고 전투레벨 진입시 구조체에 저장된 데이터를 밤낮관련 블루프린트에 전달해줍니다
@@ -100,7 +100,15 @@ void AMainLevelController::MoveFunction()
 ![33](https://github.com/Makingcode/ProjectH/assets/13048481/377face3-e2be-4b60-a703-67f2cdc9618c)
 ![11](https://github.com/Makingcode/ProjectH/assets/13048481/344ae246-6dea-453a-ada6-63b615af3f4c)
 
+전투레벨에서는 시간이 흐르지 않아 밤낮이 바뀌지 않습니다
 
+&nbsp;
+
+### 병사고용 및 부대설정
+마을에 입장시 고용할 수 있는 위젯이 나타나며 병사를 고용할 수 있다
+
+고용된 병사는 1번 부대로 설정됀다
+p키를 누르거나 왼쪽 하단의 위젯에서 클릭하여 부대설정 창을 열수 있다
 
 
 
