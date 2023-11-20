@@ -439,6 +439,44 @@ void AField_CharacterController::SelectDiv()
 }
 ```
 
+선택한 Pawn의 배열의 Length를 확인하여 그 수만큼 위치 지정용 깃발이 생성되며
+한번더 누르면 눌렀을때의 깃발위치의 Vector 값이 배열에 저장되고, 깃발을 삭제한 후
+병사들이 이동하게 됩니다.
+
+깃발생성 코드와 이동관련
+```c
+void AField_CharacterController::MovetoDestination()
+{
+	SpawnedFlag = Cast<AFlagActor>(SpawnedActor);
+	SpawnedActor = nullptr;
+	TArray<FVector> UnitDestination;
+
+	for (AActor* Actor:SpawnedFlag->FlagArray)
+	{
+		UnitDestination.Add(Actor->GetActorLocation());
+		Actor->Destroy();
+	}
+	SpawnedFlag->FlagArray.Empty();
+	SpawnedFlag->Destroy();
+
+	for (int i = 0; i < SelectedPawnArray.Num(); i++)
+	{
+		ASoldierPawn* CurrentPawn = SelectedPawnArray[i];
+		FVector CurrentLoc = CurrentPawn->GetActorLocation();
+		FVector Destination = UnitDestination[i];
+
+		CurrentPawn->SetActorRotation(FRotator(0,UKismetMathLibrary::FindLookAtRotation(CurrentLoc,Destination).Yaw,0));
+		CurrentPawn->MoveToDestination(Destination);
+		UWidgetAllyMark* Mark = Cast<UWidgetAllyMark>(CurrentPawn->AllyMark->GetUserWidgetObject());
+		if (Mark)
+		{
+			Mark->Borders->SetBrushColor(FLinearColor(0, 0, 0, 0));
+		}
+	}
+	SelectedPawnArray.Empty();
+
+}
+```
 
 
 
