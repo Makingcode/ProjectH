@@ -185,9 +185,6 @@ void AFieldPawnSpawner::CalculatePawnSpawn(int SpawnNum, FName TeamTag, FName Di
 				SoldierAICtr->RunBehaviorTree(SoldierAICtr->SoldierBT);
 				SoldierAICtr->GetBlackboardComponent()->SetValueAsName("Camp", TeamTag);
 			}
-			
-			
-
 		}
 		else
 		{
@@ -239,5 +236,12 @@ void AFieldPawnSpawner::CalculatePawnSpawn(int SpawnNum, FName TeamTag, FName Di
 	}	
 }
 ```
+&nbsp;
+병사를 스폰하고 스폰한 병사마다 Tag를 삽입해주며 이 Tag를 통해 아군과 적군 그리고 부대가 나뉘어지게 됩니다.
+그리고 Tag가 블랙보드 값에도 설정되어 Behavior 트리에서 적군과 아군의 행동이 구분되어 집니다.
+
+* 병사 명령 관련
+
+
 
 
