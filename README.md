@@ -23,7 +23,7 @@ https://www.youtube.com/watch?v=xG--lTDVgZQ&t=33s
 
 
 ### 캐릭터 이동
-*주 메인 레벨에서의 캐릭터 이동
+* 주 메인 레벨에서의 캐릭터 이동
 
 언리얼엔진5에서 새롭게 나온 EnhancedInput 시스템을 활용하였으며
 
@@ -53,7 +53,7 @@ void AMainLevelController::SetupInputComponent()
 
 &nbsp;
 
-*데칼관련
+* 데칼관련
 Class Map을 만들어 클래스를 설정해주고 
 
 ```c
