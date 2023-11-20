@@ -239,8 +239,205 @@ void AFieldPawnSpawner::CalculatePawnSpawn(int SpawnNum, FName TeamTag, FName Di
 &nbsp;
 병사를 스폰하고 스폰한 병사마다 Tag를 삽입해주며 이 Tag를 통해 아군과 적군 그리고 부대가 나뉘어지게 됩니다.
 그리고 Tag가 블랙보드 값에도 설정되어 Behavior 트리에서 적군과 아군의 행동이 구분되어 집니다.
-
+&nbsp;
 * 병사 명령 관련
+1,2,3,4 부대별 번호키를 누르고
+f1,f2,f3,f4,f5키로 부대별로 명령을 내릴 수 있습니다
+
+*특정 위치로 이동
+부대를 선택을하면 배열에 선택한 부대에 해당하는 Pawn들이 저장이 되며 선택이 된 상태에서 한번 더 누르면
+배열에서 선택해제된 Pawn들이 삭제가 됩니다.
+
+부대선택 코드
+```c
+void AField_CharacterController::SelectDiv()
+{
+	//부대선택
+	if (WasInputKeyJustPressed(EKeys::One))
+	{
+		if (IsAIOrderMove == false)
+		{
+			if (DivOneSelected)
+			{
+				for (AActor* Actor : AllyActorArray)
+				{
+					if (Actor->ActorHasTag("1"))
+					{
+						ASoldierPawn* SelectPawn = Cast<ASoldierPawn>(Actor);
+						UWidgetAllyMark* PawnMark = Cast<UWidgetAllyMark>(SelectPawn->AllyMark->GetUserWidgetObject());
+						if(PawnMark)
+						{
+							PawnMark->Borders->SetBrushColor(FLinearColor(0, 0, 0, 0));
+						}
+						SelectedPawnArray.Remove(SelectPawn);
+					}
+
+				}
+			
+				DivOneSelected = false;
+			}
+			else
+			{
+				for (AActor* Actor : AllyActorArray)
+				{
+					if (Actor->ActorHasTag("1"))
+					{
+						ASoldierPawn* SelectPawn = Cast<ASoldierPawn>(Actor);
+						SelectedPawnArray.Add(SelectPawn);
+						UWidgetAllyMark* PawnMark = Cast<UWidgetAllyMark>(SelectPawn->AllyMark->GetUserWidgetObject());
+						if (PawnMark)
+						{
+							PawnMark->Borders->SetBrushColor(FLinearColor(0, 1, 0, 1));
+						}
+					}
+
+				}
+
+				DivOneSelected = true;
+			}
+		}
+	}
+	if (WasInputKeyJustPressed(EKeys::Two))
+	{
+		if (IsAIOrderMove == false)
+		{
+			if (DivTwoSelected)
+			{
+				for (AActor* Actor : AllyActorArray)
+				{
+					if (Actor->ActorHasTag("2"))
+					{
+						ASoldierPawn* SelectPawn = Cast<ASoldierPawn>(Actor);
+						UWidgetAllyMark* PawnMark = Cast<UWidgetAllyMark>(SelectPawn->AllyMark->GetUserWidgetObject());
+						if (PawnMark)
+						{
+							PawnMark->Borders->SetBrushColor(FLinearColor(0, 0, 0, 0));
+
+						}
+						SelectedPawnArray.Remove(SelectPawn);
+					}
+
+				}
+
+				DivTwoSelected = false;
+			}
+			else
+			{
+				for (AActor* Actor : AllyActorArray)
+				{
+					if (Actor->ActorHasTag("2"))
+					{
+						ASoldierPawn* SelectPawn = Cast<ASoldierPawn>(Actor);
+						SelectedPawnArray.Add(SelectPawn);
+						UWidgetAllyMark* PawnMark = Cast<UWidgetAllyMark>(SelectPawn->AllyMark->GetUserWidgetObject());
+						if (PawnMark)
+						{
+							PawnMark->Borders->SetBrushColor(FLinearColor(0, 1, 0, 1));
+						}
+					}
+
+				}
+
+				DivTwoSelected = true;
+			}
+		}
+	}
+	if (WasInputKeyJustPressed(EKeys::Three))
+	{
+		if (IsAIOrderMove == false)
+		{
+			if (DivThreeSelected)
+			{
+				for (AActor* Actor : AllyActorArray)
+				{
+					if (Actor->ActorHasTag("3"))
+					{
+						ASoldierPawn* SelectPawn = Cast<ASoldierPawn>(Actor);
+						UWidgetAllyMark* PawnMark = Cast<UWidgetAllyMark>(SelectPawn->AllyMark->GetUserWidgetObject());
+						if (PawnMark)
+						{
+							PawnMark->Borders->SetBrushColor(FLinearColor(0, 0, 0, 0));
+						}
+
+						SelectedPawnArray.Remove(SelectPawn);
+					}
+
+				}
+
+				DivThreeSelected = false;
+			}
+			else
+			{
+				for (AActor* Actor : AllyActorArray)
+				{
+					if (Actor->ActorHasTag("3"))
+					{
+						ASoldierPawn* SelectPawn = Cast<ASoldierPawn>(Actor);
+						SelectedPawnArray.Add(SelectPawn);
+						UWidgetAllyMark* PawnMark = Cast<UWidgetAllyMark>(SelectPawn->AllyMark->GetUserWidgetObject());
+						if (PawnMark)
+						{
+							PawnMark->Borders->SetBrushColor(FLinearColor(0, 1, 0, 1));
+						}
+					}
+				}
+				DivThreeSelected = true;
+			}
+		}
+
+	}
+	if (WasInputKeyJustPressed(EKeys::Four))
+	{
+		if (IsAIOrderMove == false)
+		{
+			if (DivFourSelected)
+			{
+				for (AActor* Actor : AllyActorArray)
+				{
+					if (Actor->ActorHasTag("4"))
+					{
+						ASoldierPawn* SelectPawn = Cast<ASoldierPawn>(Actor);
+						UWidgetAllyMark* PawnMark = Cast<UWidgetAllyMark>(SelectPawn->AllyMark->GetUserWidgetObject());
+						if (PawnMark)
+						{
+							PawnMark->Borders->SetBrushColor(FLinearColor(0, 0, 0, 0));
+						}
+						SelectedPawnArray.Remove(SelectPawn);
+					}
+
+				}
+
+				DivFourSelected = false;
+			}
+			else
+			{
+				for (AActor* Actor : AllyActorArray)
+				{
+					if (Actor->ActorHasTag("4"))
+					{
+						ASoldierPawn* SelectPawn = Cast<ASoldierPawn>(Actor);
+						SelectedPawnArray.Add(SelectPawn);
+						UWidgetAllyMark* PawnMark = Cast<UWidgetAllyMark>(SelectPawn->AllyMark->GetUserWidgetObject());
+						if (PawnMark)
+						{
+							PawnMark->Borders->SetBrushColor(FLinearColor(0, 1, 0, 1));
+						}
+					}
+				}
+				DivFourSelected = true;
+			}
+		}
+	}
+	if (WasInputKeyJustPressed(EKeys::R))
+	{
+		AMainCharacterTPS* MyChar = Cast<AMainCharacterTPS>(GetPawn());
+		if (MyChar)
+		{
+			MyChar->Reload();
+		}
+	}
+}
+```
 
 
 
