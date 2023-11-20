@@ -64,7 +64,7 @@ UPROPERTY(EditAnywhere, Category="Class")
 ![22](https://github.com/Makingcode/ProjectH/assets/13048481/cd9f78e7-8b6c-4741-8e57-5ba552a5cca2)
 
 GetHitResultUnderCursorByChannel을 통해 얻은 HitActor의 클래스를 Class Map과 비교하여 
-알맞는 데칼을 보여준다
+알맞는 데칼을 보여주게 됩니다
 
 ```c
 void AMainLevelController::MoveFunction()
@@ -83,6 +83,24 @@ void AMainLevelController::MoveFunction()
 	}
 }
 ```
+
+### 게임시간과 밤낮
+에픽게임즈에서 제공하는 플러그인 Sun Position Calculator를 사용하였습니다
+
+게임시간의 흐름 조절
+
+일시정지(1번버튼) 일반(2번버튼) 빠르게(3번 버튼)의 3종류로 시간의 흐름을 조절할 수 있습니다
+시간흐름의 조절은 Set Global Time Dilation 기능을 사용하였습니다
+
+레벨전환시 시간의 공유
+캐릭터 이동레벨에서 전투레벨로 전환시 시간은 게임인스턴스를 이용해 공유하였습니다
+
+게임인스턴스에 시간에 관련된 구조체를 생성하고 전투레벨 진입시 구조체에 저장된 데이터를 밤낮관련 블루프린트에 전달해줍니다
+
+![33](https://github.com/Makingcode/ProjectH/assets/13048481/377face3-e2be-4b60-a703-67f2cdc9618c)
+![11](https://github.com/Makingcode/ProjectH/assets/13048481/344ae246-6dea-453a-ada6-63b615af3f4c)
+
+
 
 
 
