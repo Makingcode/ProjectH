@@ -54,6 +54,7 @@ void AMainLevelController::SetupInputComponent()
 &nbsp;
 
 * 데칼관련
+
 Class Map을 만들어 클래스를 설정해주고 
 
 ```c
@@ -105,11 +106,138 @@ void AMainLevelController::MoveFunction()
 &nbsp;
 
 ### 병사고용 및 부대설정
-마을에 입장시 고용할 수 있는 위젯이 나타나며 병사를 고용할 수 있다
+마을에 입장시 고용할 수 있는 위젯이 나타나며 병사를 고용할 수 있습니다
 
-고용된 병사는 1번 부대로 설정됀다
-p키를 누르거나 왼쪽 하단의 위젯에서 클릭하여 부대설정 창을 열수 있다
+고용된 병사는 1번 부대로 설정되며
+p키를 누르거나 왼쪽 하단의 위젯에서 클릭하여 부대설정 창을 열수 있습니다
 
+### 전투관련
 
+* 전투 입장
+전투 입장시 EnemyPawn의 UnitSize와 내 캐릭터의 부대별 UnitSize가 게임인스턴스에 저장이 되며
+Enum LevelType에 따라 레벨이 넘어가게 됩니다
+
+* 캐릭터 스폰
+레벨이 넘어가면 Field_Manager BP를 통해 캐릭터 스폰이 제어됩니다
+Manager에서 병사를 스폰하는 Spawner를 생성하고 Spanwer에서 병사들을 생성하게 됩니다.
+
+```c
+void AFieldPawnSpawner::CalculatePawnSpawn(int SpawnNum, FName TeamTag, FName DivTag)
+{
+	FVector CalculatedSpawnLoc = FVector(0,0,0);
+	FHitResult HitResult;
+	FActorSpawnParameters SpawnParams;
+	FVector RightLineValue;
+	FVector ForwardLineValue;
+	FVector FormationLocation;
+	FVector LineTraceStartLoc;
+	FVector LineTraceEndLoc;
+
+	SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
+
+	for (int currentNum = 1; currentNum <= SpawnNum; currentNum++)
+	{
+		if (SpawnNum < 11 == true)
+		{
+			int Local_RightLineLimit = SpawnNum;
+			int RightLength = (
+				(((FMath::TruncToFloat(ColDistance / 2)) * (Local_RightLineLimit - 1)) * -1) +
+				(((currentNum - 1) % 10) * (FMath::TruncToFloat(ColDistance)))
+				);
+
+			RightLineValue = GetActorRightVector() * RightLength;
+			ForwardLineValue = (GetActorForwardVector() * (((currentNum - 1) / 10) * (FMath::TruncToFloat(RowDistance)))) * -1;
+			FormationLocation = GetActorLocation() + (RightLineValue + ForwardLineValue);
+
+			LineTraceStartLoc = FVector(FormationLocation.X, FormationLocation.Y, 15000.f);
+			LineTraceEndLoc = FVector(FormationLocation.X, FormationLocation.Y, -2000.f);
+
+			bool bHitLineTrace = GetWorld()->LineTraceSingleByObjectType(HitResult, LineTraceStartLoc, LineTraceEndLoc, FCollisionObjectQueryParams::AllStaticObjects, FCollisionQueryParams::DefaultQueryParam);
+			
+			
+			if (bHitLineTrace)
+			{
+				CalculatedSpawnLoc = HitResult.Location + 80.f;
+			}
+
+			SoldierPawn = GetWorld()->SpawnActor<ASoldierPawn>(SpawnPawn, CalculatedSpawnLoc, FRotator(0, 0, 0), SpawnParams);
+			
+			SoldierPawn->Tags.Add(FName(TeamTag));
+			SoldierPawn->Tags.Add(FName(DivTag));
+
+			if (TeamTag == "Ally")
+			{
+				SoldierPawn->TeamID = 1;
+				SoldierPawn->ShowOwnMark(true);
+			}
+			else
+			{
+				SoldierPawn->TeamID = 2;
+				SoldierPawn->ShowOwnMark(false);
+			}
+
+			
+
+			SoldierAICtr = Cast<ASoldierAIController>(UAIBlueprintHelperLibrary::GetAIController(SoldierPawn));
+
+			if (SoldierAICtr->SoldierBT != nullptr)
+			{
+				SoldierAICtr->RunBehaviorTree(SoldierAICtr->SoldierBT);
+				SoldierAICtr->GetBlackboardComponent()->SetValueAsName("Camp", TeamTag);
+			}
+			
+			
+
+		}
+		else
+		{
+			int Local_RightLineLimit = 10;
+			int RightLength = (
+				(((FMath::TruncToFloat(ColDistance / 2)) * (Local_RightLineLimit - 1)) * -1) +
+				(((currentNum - 1) % 10) * (FMath::TruncToFloat(ColDistance)))
+				);
+
+			RightLineValue = GetActorRightVector() * RightLength;
+			ForwardLineValue = (GetActorForwardVector() * (((currentNum - 1) / 10) * (FMath::TruncToFloat(RowDistance)))) * -1;
+			FormationLocation = GetActorLocation() + (RightLineValue + ForwardLineValue);
+
+			LineTraceStartLoc = FVector(FormationLocation.X, FormationLocation.Y, 15000.f);
+			LineTraceEndLoc = FVector(FormationLocation.X, FormationLocation.Y, -2000.f);
+
+			bool bHitLineTrace=GetWorld()->LineTraceSingleByObjectType(HitResult, LineTraceStartLoc, LineTraceEndLoc, FCollisionObjectQueryParams::AllStaticObjects, FCollisionQueryParams::DefaultQueryParam);
+
+			if (bHitLineTrace)
+			{
+				CalculatedSpawnLoc = HitResult.Location + 80.f;
+			}
+			
+			
+			SoldierPawn = GetWorld()->SpawnActor<ASoldierPawn>(SpawnPawn, CalculatedSpawnLoc, FRotator(0, 0, 0), SpawnParams);
+
+			SoldierPawn->Tags.Add(FName(TeamTag));
+			SoldierPawn->Tags.Add(FName(DivTag));
+
+			if (TeamTag == "Ally")
+			{
+				SoldierPawn->TeamID = 1;
+				SoldierPawn->ShowOwnMark(true);
+			}
+			else
+			{
+				SoldierPawn->TeamID = 2;
+				SoldierPawn->ShowOwnMark(false);
+			}
+
+			SoldierAICtr = Cast<ASoldierAIController>(UAIBlueprintHelperLibrary::GetAIController(SoldierPawn));
+
+			if (SoldierAICtr->SoldierBT != nullptr)
+			{
+				SoldierAICtr->RunBehaviorTree(SoldierAICtr->SoldierBT);
+				SoldierAICtr->GetBlackboardComponent()->SetValueAsName("Camp", TeamTag);
+			}
+		}	
+	}	
+}
+```
 
 
